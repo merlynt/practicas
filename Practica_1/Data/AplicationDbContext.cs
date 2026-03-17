@@ -1,0 +1,30 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Practica_1.Models;
+
+namespace Practica_1.Data
+{
+    public class AplicationDbContext : DbContext
+    {
+        public AplicationDbContext(DbContextOptions<AplicationDbContext> options) : base(options)
+        {
+            
+        }
+
+        public DbSet<StaffModel> staffModel { get; set; }
+        public DbSet<StaffCategoryModel> staffCategoryModel { get; set; }
+        public DbSet<SpecialtyModel> specialtyModel { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder) 
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<StaffModel>()
+                .HasOne(s => s.Specialty)
+                .WithMany(sp => sp.StaffMembers)
+                .HasForeignKey(s => s.SpecialtyId)
+                .OnDelete(DeleteBehavior.SetNull);
+        }
+
+    }
+}
